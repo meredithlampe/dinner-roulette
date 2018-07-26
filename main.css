@@ -270,11 +270,27 @@ h3 {
     color: grey;
 }
 .post .date, .post .location {
-    padding: 0 10px;
+    /*padding: 0 10px;*/
     color: grey;
 }
 .post .date, .post .location {
-    padding: 10px 10px;
+    /*padding: 10px 10px;*/
+}
+
+.party-content-item {
+    padding-bottom: 10px;
+}
+
+.party-content-container {
+    padding: 10px 10px;   
+}
+
+.party-needs-header {
+    margin-bottom: 0px;
+}
+
+.new-party-need-form-input-container {
+    padding-bottom: 0px;
 }
 .post .comments-container .text {
     margin-left: 5px;

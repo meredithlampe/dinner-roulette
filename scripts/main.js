@@ -68,7 +68,10 @@ function writeNewPost(uid, username, picture, title, body) {
 // [START write_fan_out]
 function makeNewDinnerParty(uid, username, picture, date, location) {
 
+  // var partyId = generatePartyIdForUserid(uid);
+
   var partyData = {
+    // id: partyId,
     host: username,
     hostPic: picture,
     uid: uid,
@@ -77,7 +80,7 @@ function makeNewDinnerParty(uid, username, picture, date, location) {
     time: "1900",
   }
 
-  // Get a key for a new Post.
+  // Get a key for a new event.
   var newEventKey = firebase.database().ref().child('events').push().key;
 
   // Write the new post's data simultaneously in the posts list and the user's post list.
@@ -87,6 +90,19 @@ function makeNewDinnerParty(uid, username, picture, date, location) {
   return firebase.database().ref().update(updates);
 }
 // [END write_fan_out]
+
+// function generatePartyIdForUserid(uid) {
+//   var secondsPartyCreated = new Date().getTime() / 1000;
+//   var to_hash = secondsPartyCreated + '' + uid;
+//   var hash = 0, i, chr;
+//   if (to_hash === 0) return hash;
+//   for (i = 0; i < to_hash; i++) {
+//     chr   = to_hash.charCodeAt(i);
+//     hash  = ((hash << 5) - hash) + chr;
+//     hash |= 0; // Convert to 32bit integer
+//   }
+//   return hash;
+// }
 
 /**
  * Star/unstar post.
@@ -241,8 +257,23 @@ function createPartyElement(partyId, host, date, location, hostPic) {
               '<div class="username mdl-color-text--black"></div>' +
             '</div>' +
           '</div>' +
-          '<div class="date"></div>' +
-          '<div class="location"></div>' + 
+          '<div class="party-content-container">' +
+            '<div class="party-content-item date"></div>' +
+            '<div class="party-content-item location"></div>' + 
+            // '<form id="new-attendee-form" action="#">' + 
+            //   '<button type="submit" class="party-content-item mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">' + 
+            //     'Attend Party' + 
+            //   '</button>' + 
+            // '</form>' +
+          '<h5 class="party-needs-header">Dishes Requested</h5>' +
+            '<form id="new-party-need-form" action="#" class="new-party-need-form">' + 
+              '<div class="mdl-textfield mdl-js-textfield new-party-need-form-input-container">' +
+                '<input class="mdl-textfield__input new-party-need" type="text">' +
+                '<label class="mdl-textfield__label">Add dish to bring...</label>' +
+              '</div>' +
+            '</form>' +
+            '<div class="party-needs-container"></div>' +
+          '</div>' +
         '</div>' +
       '</div>';
 
@@ -250,6 +281,12 @@ function createPartyElement(partyId, host, date, location, hostPic) {
   var div = document.createElement('div');
   div.innerHTML = html;
   var postElement = div.firstChild;
+  if (componentHandler) {
+    componentHandler.upgradeElements(postElement.getElementsByClassName('mdl-textfield')[0]);
+  }
+
+  var addPartyNeedForm = postElement.getElementsByClassName('new-party-need-form')[0];
+  var partyNeedInput = postElement.getElementsByClassName('new-party-need')[0];
 
   // Set values.
   postElement.getElementsByClassName('date')[0].innerText = date;
@@ -258,6 +295,40 @@ function createPartyElement(partyId, host, date, location, hostPic) {
   // postElement.getElementsByClassName('username')[0].innerText = author || 'Anonymous';
   postElement.getElementsByClassName('avatar')[0].style.backgroundImage = 'url("' +
       (hostPic || './silhouette.jpg') + '")';
+  // TODO: show party needs
+
+    // Listen for party needs.
+  // [START child_event_listener_recycler]
+  var partyNeedsRef = firebase.database().ref('party-needs/' + partyId);
+  partyNeedsRef.on('child_added', function(data) {
+    addPartyNeedElement(postElement, data.key, data.val().needText, data.val().claimedBy);
+  });
+
+  // TODO: handle change and remove events for party needs
+  // commentsRef.on('child_changed', function(data) {
+  //   setCommentValues(postElement, data.key, data.val().text, data.val().author);
+  // });
+
+  // commentsRef.on('child_removed', function(data) {
+  //   deleteComment(postElement, data.key);
+  // });
+
+  // var partiesRef = firebase.database().ref('events');
+
+
+  // [END child_event_listener_recycler]
+
+  // Keep track of all Firebase reference on which we are listening.
+  listeningFirebaseRefs.push(partyNeedsRef);
+
+  // Create new party need.
+  addPartyNeedForm.onsubmit = function(e) {
+    e.preventDefault();
+    // createNewComment(postId, firebase.auth().currentUser.displayName, uid, commentInput.value);
+    createNewPartyNeed(partyId, partyNeedInput.value);
+    partyNeedInput.value = '';
+    partyNeedInput.parentElement.MaterialTextfield.boundUpdateClassesHandler();
+  };  
 
   return postElement;
 }
@@ -270,6 +341,13 @@ function createNewComment(postId, username, uid, text) {
     text: text,
     author: username,
     uid: uid
+  });
+}
+
+function createNewPartyNeed(partyId, needText) {
+  firebase.database().ref().child('party-needs/' + partyId).push({
+    partyId: partyId,
+    needText: needText,
   });
 }
 
@@ -305,6 +383,20 @@ function addCommentElement(postElement, id, text, author) {
 
   var commentsContainer = postElement.getElementsByClassName('comments-container')[0];
   commentsContainer.appendChild(comment);
+}
+
+/**
+ * Creates a party needs element and adds it to the given postElement.
+ */
+function addPartyNeedElement(postElement, id, needText, claimed_by) {
+  var partyNeed = document.createElement('div');
+  partyNeed.classList.add('comment-' + id);
+  partyNeed.innerHTML = '<span class="username"></span><span class="comment"></span>';
+  partyNeed.getElementsByClassName('comment')[0].innerText = needText;
+  partyNeed.getElementsByClassName('username')[0].innerText = claimed_by || 'Anonymous';
+
+  var commentsContainer = postElement.getElementsByClassName('party-needs-container')[0];
+  commentsContainer.appendChild(partyNeed);
 }
 
 /**
@@ -531,6 +623,7 @@ window.addEventListener('load', function() {
       newDinnerPartyWithCurrentUserAsHost(date, location);
       dateInput.value = '';
       locationInput.value = '';
+      showSection(partiesSection, partiesMenuButton);
     }
   };
 

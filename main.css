@@ -269,6 +269,13 @@ h3 {
     padding: 0 10px;
     color: grey;
 }
+.post .date, .post .location {
+    padding: 0 10px;
+    color: grey;
+}
+.post .date, .post .location {
+    padding: 10px 10px;
+}
 .post .comments-container .text {
     margin-left: 5px;
     color: #444;

@@ -289,6 +289,15 @@ h3 {
     margin-bottom: 0px;
 }
 
+.party-needs-container {
+    margin-bottom: 10px;
+}
+
+.party-need {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
 .new-party-need-form-input-container {
     padding-bottom: 0px;
 }

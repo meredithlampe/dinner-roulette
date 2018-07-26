@@ -269,10 +269,15 @@ function createPartyElement(partyId, host, date, location, hostPic) {
             '<form id="new-party-need-form" action="#" class="new-party-need-form">' + 
               '<div class="mdl-textfield mdl-js-textfield new-party-need-form-input-container">' +
                 '<input class="mdl-textfield__input new-party-need" type="text">' +
-                '<label class="mdl-textfield__label">Add dish to bring...</label>' +
+                '<label class="mdl-textfield__label">Add dish...</label>' +
               '</div>' +
             '</form>' +
             '<div class="party-needs-container"></div>' +
+            '<form id="archive-party-form" action="#">' + 
+              '<button type="submit" class="archive-party-button party-content-item mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">' + 
+                'Archive Party' + 
+              '</button>' + 
+            '</form>' +
           '</div>' +
         '</div>' +
       '</div>';
@@ -287,6 +292,7 @@ function createPartyElement(partyId, host, date, location, hostPic) {
 
   var addPartyNeedForm = postElement.getElementsByClassName('new-party-need-form')[0];
   var partyNeedInput = postElement.getElementsByClassName('new-party-need')[0];
+  var archivePartyButton = postElement.getElementsByClassName('archive-party-button')[0];
 
   // Set values.
   postElement.getElementsByClassName('date')[0].innerText = date;
@@ -330,7 +336,16 @@ function createPartyElement(partyId, host, date, location, hostPic) {
     partyNeedInput.parentElement.MaterialTextfield.boundUpdateClassesHandler();
   };  
 
+  archivePartyButton.onclick = function(e) {
+    e.preventDefault();
+    archiveParty(partyId);
+  }
+
   return postElement;
+}
+
+function archiveParty(partyId) {
+  firebase.database().ref('events/' + partyId).remove();
 }
 
 /**
@@ -390,10 +405,10 @@ function addCommentElement(postElement, id, text, author) {
  */
 function addPartyNeedElement(postElement, id, needText, claimed_by) {
   var partyNeed = document.createElement('div');
-  partyNeed.classList.add('comment-' + id);
-  partyNeed.innerHTML = '<span class="username"></span><span class="comment"></span>';
-  partyNeed.getElementsByClassName('comment')[0].innerText = needText;
-  partyNeed.getElementsByClassName('username')[0].innerText = claimed_by || 'Anonymous';
+  partyNeed.classList.add('party-need');
+  // partyNeed.innerHTML = '<span class="username"></span><span class="comment"></span>';
+  partyNeed.innerText = needText;
+  // partyNeed.getElementsByClassName('username')[0].innerText = claimed_by || 'Anonymous';
 
   var commentsContainer = postElement.getElementsByClassName('party-needs-container')[0];
   commentsContainer.appendChild(partyNeed);

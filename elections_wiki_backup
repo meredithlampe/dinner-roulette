@@ -1,0 +1,58 @@
+Elections
+This is the Wiki for Elections work on the Civic Engagement team.
+
+Bookmark
+
+ElectionKitBookmarkData.php is the core of the bookmark. This queries for a currently active election related ent for the user, and if there is one returned, links to the corresponding product experience and displays the proper title for the bookmark. If there is not an active election related ent, then the bookmark does not show. 
+
+In particular see
+genIsBookmarkVisibile
+genMURI
+genNTFBLiteAction
+genBookmarkName
+
+Also see: 
+icon for the bookmark
+where bookmark name call is started
+The linking behavior on WWW 
+
+For the Mexican election Mike asked that we have the bookmark direct to a external results page after a certain time. I built this with the future in mind, and now this can be modified with a sitevar at any time. 
+The code for WWW
+The code for mobile 
+the sitevar is SV_ELECTION_KIT_BOOKMARK_OFFSITE_URL
+
+Notifications
+There have been two use cases for notifications on Elections thus far:
+Civic Checkup Entrypoint (screenshot)
+Batched, sent out with a custom async job. We have to do this since we want to send out usually ~30M-60M notifications in a small time window (shortly after the results of an election are announced).
+We use the Flex Scheduler to schedule our custom async job. Here is an example configuration (screenshot)
+using the ON_DEMAND recurrence type allows us to send out the notifications as soon as results are out. 
+In the screenshot, we use the flex_scheduler_dim_all_users candidate table, filtering using the pt_civic_checkup_users GK. This *works* (if pt_civic_checkup only passes our desired recipients), but takes a long time because flex_scheduler_dim_all_users is a huge table. A better way to configure the Flex project is to create a separate candidate table in advance of the launch that only has users from the launch country in it. This way filtering happens way faster and the job can finish quicker. To create the candidate table, do the following:
+First create a temporary table containing MAP from the launch country, like so (you can just save the output of this table in daiquery):
+SQL
+select dau.userid
+    from dim_all_users_fast:bi dau
+    where
+        dau.l30 > 0 and
+        dau.isactivated = '1' and
+        dau.country = 'CO' and 
+        dau.ds = '2018-06-15'
+Then, create a new table that conforms to what the Flex scheduling pipeline expects:
+SQL
+CREATE TABLE IF NOT EXISTS flex_civic_checkup_colombia_candidates (
+    uid BIGINT,
+    udata VARCHAR,
+    ds VARCHAR
+)
+WITH (
+    partitioned_by = ARRAY['ds'],
+    retention_days = 30
+);
+Voter Registration Drive reminders/CTA
+Triggered by user behavior (no batched async job)
+
+
+Election Day Promotions
+
+
+

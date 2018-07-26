@@ -1,0 +1,32 @@
+[debug] [2018-07-26T04:16:55.932Z] ----------------------------------------------------------------------
+[debug] [2018-07-26T04:16:55.934Z] Command:       /usr/local/Cellar/node/8.4.0/bin/node /usr/local/bin/firebase serve
+[debug] [2018-07-26T04:16:55.934Z] CLI Version:   4.0.0
+[debug] [2018-07-26T04:16:55.934Z] Platform:      darwin
+[debug] [2018-07-26T04:16:55.934Z] Node Version:  v8.4.0
+[debug] [2018-07-26T04:16:55.934Z] Time:          Wed Jul 25 2018 21:16:55 GMT-0700 (PDT)
+[debug] [2018-07-26T04:16:55.934Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2018-07-26T04:16:55.945Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2018-07-26T04:16:55.945Z] > authorizing via signed-in user
+[debug] [2018-07-26T04:16:55.947Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/dinner-roulette-473a4  
+  
+ Wed Jul 25 2018 21:16:55 GMT-0700 (PDT)
+[debug] [2018-07-26T04:16:56.348Z] <<< HTTP RESPONSE 200
+[debug] [2018-07-26T04:16:56.349Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/dinner-roulette-473a4/tokens  
+  
+ Wed Jul 25 2018 21:16:56 GMT-0700 (PDT)
+[debug] [2018-07-26T04:16:56.717Z] <<< HTTP RESPONSE 200
+[debug] [2018-07-26T04:16:56.717Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/dinner-roulette-473a4  
+  
+ Wed Jul 25 2018 21:16:56 GMT-0700 (PDT)
+[debug] [2018-07-26T04:16:56.971Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Serving from '/Users/merlam/Personal/git/dinner-roulette'...
+[info] 
+[debug] [2018-07-26T04:16:56.973Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/242787463667/clients/_:getWebAppConfig  
+  
+ Wed Jul 25 2018 21:16:56 GMT-0700 (PDT)
+[debug] [2018-07-26T04:16:57.469Z] <<< HTTP RESPONSE 200
+[info] i  hosting: Serving hosting files from: ./
+[info] ✔  hosting: Local server: http://localhost:5000
+

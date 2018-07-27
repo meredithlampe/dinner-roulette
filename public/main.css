@@ -126,7 +126,10 @@ h3 {
     height: 20px;
     padding: 5px;
 }
-.description {
+.party-attendees-header {
+    padding-bottom: 10px;
+}
+.filler {
     flex-grow: 1;
 }
 #sign-in-button {

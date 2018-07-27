@@ -20,6 +20,7 @@
 var newPartyForm = document.getElementById('new-party-form');
 var dateInput = document.getElementById('new-party-date');
 var locationInput = document.getElementById('new-party-location');
+var descriptionInput = document.getElementById('new-party-description');
 var signInButton = document.getElementById('sign-in-button');
 var signOutButton = document.getElementById('sign-out-button');
 var splashPage = document.getElementById('page-splash');
@@ -72,7 +73,7 @@ function writeNewPost(uid, username, picture, title, body) {
  * Saves a new post to the Firebase DB.
  */
 // [START write_fan_out]
-function makeNewDinnerParty(uid, username, picture, date, location) {
+function makeNewDinnerParty(uid, username, picture, date, location, description) {
 
   // var partyId = generatePartyIdForUserid(uid);
 
@@ -82,6 +83,7 @@ function makeNewDinnerParty(uid, username, picture, date, location) {
     hostPic: picture,
     uid: uid,
     location: location,
+    description: description,
     date: date,
     time: "1900",
   }
@@ -247,17 +249,20 @@ function createPostElement(postId, title, text, author, authorId, authorPic) {
 /**
  * Creates a party element.
  */
-function createPartyElement(partyId, host, date, location, hostPic) {
+function createPartyElement(partyId, host, date, location, description, hostPic) {
   var uid = firebase.auth().currentUser.uid;
   var postElement = getPartyElement(partyId);
 
-  var addPartyNeedForm = postElement.getElementsByClassName('new-party-need-form')[0];
-  var partyNeedInput = postElement.getElementsByClassName('new-party-need')[0];
+  // var addPartyNeedForm = postElement.getElementsByClassName('new-party-need-form')[0];
+  // var partyNeedInput = postElement.getElementsByClassName('new-party-need')[0];
   var archivePartyButton = postElement.getElementsByClassName('archive-party-button')[0];
 
   // Set values.
   postElement.getElementsByClassName('date')[0].innerText = date;
   postElement.getElementsByClassName('location')[0].innerText = location;
+  if (description) {
+    postElement.getElementsByClassName('description')[0].innerText = description;  
+  }
   postElement.getElementsByClassName('mdl-card__title-text')[0].innerText = host + '\'s Party';
   // postElement.getElementsByClassName('username')[0].innerText = author || 'Anonymous';
   postElement.getElementsByClassName('avatar')[0].style.backgroundImage = 'url("' +
@@ -266,10 +271,10 @@ function createPartyElement(partyId, host, date, location, hostPic) {
 
     // Listen for party needs.
   // [START child_event_listener_recycler]
-  var partyNeedsRef = firebase.database().ref('party-needs/' + partyId);
-  partyNeedsRef.on('child_added', function(data) {
-    addPartyNeedElement(postElement, data.key, data.val().needText, data.val().claimedBy);
-  });
+  // var partyNeedsRef = firebase.database().ref('party-needs/' + partyId);
+  // partyNeedsRef.on('child_added', function(data) {
+  //   addPartyNeedElement(postElement, data.key, data.val().needText, data.val().claimedBy);
+  // });
 
   // TODO: handle change and remove events for party needs
   // commentsRef.on('child_changed', function(data) {
@@ -286,16 +291,16 @@ function createPartyElement(partyId, host, date, location, hostPic) {
   // [END child_event_listener_recycler]
 
   // Keep track of all Firebase reference on which we are listening.
-  listeningFirebaseRefs.push(partyNeedsRef);
+  // listeningFirebaseRefs.push(partyNeedsRef);
 
   // Create new party need.
-  addPartyNeedForm.onsubmit = function(e) {
-    e.preventDefault();
-    // createNewComment(postId, firebase.auth().currentUser.displayName, uid, commentInput.value);
-    createNewPartyNeed(partyId, partyNeedInput.value);
-    partyNeedInput.value = '';
-    partyNeedInput.parentElement.MaterialTextfield.boundUpdateClassesHandler();
-  };  
+  // addPartyNeedForm.onsubmit = function(e) {
+  //   e.preventDefault();
+  //   // createNewComment(postId, firebase.auth().currentUser.displayName, uid, commentInput.value);
+  //   createNewPartyNeed(partyId, partyNeedInput.value);
+  //   partyNeedInput.value = '';
+  //   partyNeedInput.parentElement.MaterialTextfield.boundUpdateClassesHandler();
+  // };  
 
   // add attendees section
   var attendeesRef = firebase.database().ref('party-attendees/' + partyId);
@@ -348,6 +353,7 @@ function createPartyElementAttendeeView(partyId, host, date, location, descripti
             // '<div class="party-content-item date"></div>' +
             '<div class="party-content-item location"></div>' + 
             '<div class="description"></div>' + 
+            '<div class="filler"></div>' +
             '<div class="status"></div>' + 
             '<form id="new-attendee-form" action="#">' + 
               '<button type="submit" class="attend-party-button party-content-item mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">' + 
@@ -444,21 +450,15 @@ function getPartyElement(partyId) {
           '<div class="party-content-container">' +
             '<div class="party-content-item date"></div>' +
             '<div class="party-content-item location"></div>' + 
+            '<div class="party-content-item description"></div>' + 
             // '<form id="new-attendee-form" action="#">' + 
             //   '<button type="submit" class="party-content-item mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">' + 
             //     'Attend Party' + 
             //   '</button>' + bfcu
             // '</form>' +
-          '<h5 class="party-needs-header">Attendees</h5>' +
+          '<h5 class="party-attendees-header">Attendees</h5>' +
           '<div class="party-attendees-container"></div>' +
-          '<h5 class="party-needs-header">Dishes Requested</h5>' +
-            '<form id="new-party-need-form" action="#" class="new-party-need-form">' + 
-              '<div class="mdl-textfield mdl-js-textfield new-party-need-form-input-container">' +
-                '<input class="mdl-textfield__input new-party-need" type="text">' +
-                '<label class="mdl-textfield__label">Add dish...</label>' +
-              '</div>' +
-            '</form>' +
-            '<div class="party-needs-container"></div>' +
+          '<div class="filler"></div>' +
             '<form id="archive-party-form" action="#">' + 
               '<button type="submit" class="archive-party-button party-content-item mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">' + 
                 'Archive Party' + 
@@ -472,9 +472,9 @@ function getPartyElement(partyId) {
     var div = document.createElement('div');
     div.innerHTML = html;
     var partyElement = div.firstChild;
-    if (componentHandler) {
-      componentHandler.upgradeElements(partyElement.getElementsByClassName('mdl-textfield')[0]);
-    }
+    // if (componentHandler) {
+    //   componentHandler.upgradeElements(partyElement.getElementsByClassName('mdl-textfield')[0]);
+    // }
     return partyElement;
 }
 
@@ -617,7 +617,7 @@ function startDatabaseQueries() {
       var host = data.val().host || 'Anonymous';
       var containerElement = sectionElement.getElementsByClassName('posts-container')[0];
       containerElement.insertBefore(
-        createPartyElement(data.key, data.val().host, data.val().date, data.val().location, data.val().hostPic),
+        createPartyElement(data.key, data.val().host, data.val().date, data.val().location, data.val().description, data.val().hostPic),
         containerElement.firstChild);
     });
     ref.on('child_changed', function(data) {
@@ -746,14 +746,14 @@ function newPostForCurrentUser(title, text) {
   // [END single_value_read]
 }
 
-function newDinnerPartyWithCurrentUserAsHost(date, location) {
+function newDinnerPartyWithCurrentUserAsHost(date, location, description) {
   var userId = firebase.auth().currentUser.uid;
   return firebase.database().ref('/users/' + userId).once('value').then(function(snapshot) {
     var username = (snapshot.val() && snapshot.val().username) || 'Anonymous';
     // [START_EXCLUDE]
     return makeNewDinnerParty(firebase.auth().currentUser.uid, username,
       firebase.auth().currentUser.photoURL,
-      date, location);
+      date, location, description);
     // [END_EXCLUDE]
   });
 }
@@ -805,10 +805,12 @@ window.addEventListener('load', function() {
     e.preventDefault();
     var date = dateInput.value;
     var location = locationInput.value;
+    var description = descriptionInput.value;
     if (date && location) {
-      newDinnerPartyWithCurrentUserAsHost(date, location);
+      newDinnerPartyWithCurrentUserAsHost(date, location, description);
       dateInput.value = '';
       locationInput.value = '';
+      descriptionInput.value = '';
       showSection(partiesSection, partiesMenuButton);
     }
   };

@@ -92,7 +92,7 @@
 
   <main class="mdl-layout__content mdl-color--grey-100">
 
-    <!-- Show the add post form -->
+    <!-- Show the add party form -->
     <section class="mdl-grid content" id="add-post" style="display:none">
       <div class="mdl-cell mdl-cell--12-col mdl-grid">
 
@@ -106,11 +106,15 @@
               <form id="new-party-form" action="#">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                   <input class="mdl-textfield__input" type="text" id="new-party-date">
-                  <label class="mdl-textfield__label" for="new-party-date">Date</label>
+                  <label class="mdl-textfield__label" for="new-party-date"><strong>Date/Time</strong>, e.g. Tuesday, January 12th at 7:00</label>
+                </div>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                  <textarea class="mdl-textfield__input" rows="1" id="new-party-location"></textarea>
+                  <label class="mdl-textfield__label" for="new-party-location"><strong>Location</strong>, e.g. 123 Fourth Ave</label>
                 </div>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                   <textarea class="mdl-textfield__input" rows="3" id="new-party-location"></textarea>
-                  <label class="mdl-textfield__label" for="new-party-location">Location</label>
+                  <label class="mdl-textfield__label" for="new-party-location"><strong>Description</strong></label>
                 </div>
                 <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
                   Add Party

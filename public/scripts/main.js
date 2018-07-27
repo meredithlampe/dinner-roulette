@@ -331,7 +331,7 @@ function addAttendeeElement(element, key, attendeeName, bringingText) {
   attendeesContainer.appendChild(bringingTextDiv);
 }
 
-function createPartyElementAttendeeView(partyId, host, date, location, hostPic) {
+function createPartyElementAttendeeView(partyId, host, date, location, description, hostPic) {
   var html =
       '<div class="post post-' + partyId + ' mdl-cell mdl-cell--12-col ' +
                   'mdl-cell--6-col-tablet mdl-cell--4-col-desktop mdl-grid mdl-grid--no-spacing">' +
@@ -347,6 +347,8 @@ function createPartyElementAttendeeView(partyId, host, date, location, hostPic) 
           '<div class="party-content-container">' +
             // '<div class="party-content-item date"></div>' +
             '<div class="party-content-item location"></div>' + 
+            '<div class="description"></div>' + 
+            '<div class="status"></div>' + 
             '<form id="new-attendee-form" action="#">' + 
               '<button type="submit" class="attend-party-button party-content-item mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">' + 
                 'Attend Party' + 
@@ -360,9 +362,29 @@ function createPartyElementAttendeeView(partyId, host, date, location, hostPic) 
     var div = document.createElement('div');
     div.innerHTML = html;
     var partyElement = div.firstChild;
-    var attendButton = partyElement.getElementsByClassName("attend-party-button")[0];
 
+    var status = partyElement.getElementsByClassName('status')[0];
+    // add attendee status
+    var attendeesRef = firebase.database().ref('party-attendees/' + partyId);
+    attendeesRef.on('child_added', function(data) {
+      if (data.val().attendeeUid === firebase.auth().currentUser.uid) {
+        status.innerHTML = 'You\'re attending this party';
+      }
+    });
+    attendeesRef.on('child_changed', function(data) {
+      
+    });
+    attendeesRef.on('child_removed', function(data) {
+      
+    });
+    listeningFirebaseRefs.push(attendeesRef);
+
+    var attendButton = partyElement.getElementsByClassName("attend-party-button")[0];
     attendButton.onclick = function() {
+      // hide list of things people are bringing to this party
+      while (otherPeopleAreBringingList.firstChild) {
+          otherPeopleAreBringingList.removeChild(otherPeopleAreBringingList.firstChild);
+      }
       showSection(attendParty);
         // add attendees section
       var attendeesRef = firebase.database().ref('party-attendees/' + partyId);
@@ -377,7 +399,14 @@ function createPartyElementAttendeeView(partyId, host, date, location, hostPic) 
         return firebase.database().ref('/users/' + firebase.auth().currentUser.uid).once('value').then(function(snapshot) {
           var username = (snapshot.val() && snapshot.val().username) || 'Anonymous';
           // [START_EXCLUDE]
-          return addNewPartyAttendee(partyId, firebase.auth().currentUser.uid, username, willBringInput.value);
+          var willBring = willBringInput.value;
+          willBringInput.value = '';
+          addNewPartyAttendee(partyId, firebase.auth().currentUser.uid, username, willBring);
+
+          // hide list of things people are bringing to this party
+          while (otherPeopleAreBringingList.firstChild) {
+              otherPeopleAreBringingList.removeChild(otherPeopleAreBringingList.firstChild);
+          }
           // [END_EXCLUDE]
         });
         
@@ -392,6 +421,9 @@ function createPartyElementAttendeeView(partyId, host, date, location, hostPic) 
   // partyElement.getElementsByClassName('date')[0].innerText = date;
   partyElement.getElementsByClassName('location')[0].innerText = location;
 
+  if (description) {
+    partyElement.getElementsByClassName('description')[0].innerText = description;  
+  }
   return partyElement;
 }
 
@@ -607,7 +639,7 @@ function startDatabaseQueries() {
       var host = data.val().host || 'Anonymous';
       var containerElement = sectionElement.getElementsByClassName('posts-container')[0];
       containerElement.insertBefore(
-        createPartyElementAttendeeView(data.key, data.val().host, data.val().date, data.val().location, data.val().hostPic),
+        createPartyElementAttendeeView(data.key, data.val().host, data.val().date, data.val().location, data.val().description, data.val().hostPic),
         containerElement.firstChild);
     });
     // ref.on('child_changed', function(data) {
@@ -630,7 +662,6 @@ function startDatabaseQueries() {
   fetchPosts(userPostsRef, userPostsSection);
   fetchParties(partiesRef, partiesSection);
   fetchPartiesAttendees(partiesAttendeesRef, partiesSectionAttendees);
-
 
   // Keep track of all Firebase refs we are listening to.
   listeningFirebaseRefs.push(topUserPostsRef);

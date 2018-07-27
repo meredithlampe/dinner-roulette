@@ -1,101 +1,41 @@
-[debug] [2018-07-26T16:50:19.535Z] ----------------------------------------------------------------------
-[debug] [2018-07-26T16:50:19.537Z] Command:       /usr/local/Cellar/node/8.4.0/bin/node /usr/local/bin/firebase serve
-[debug] [2018-07-26T16:50:19.537Z] CLI Version:   4.0.0
-[debug] [2018-07-26T16:50:19.537Z] Platform:      darwin
-[debug] [2018-07-26T16:50:19.537Z] Node Version:  v8.4.0
-[debug] [2018-07-26T16:50:19.537Z] Time:          Thu Jul 26 2018 09:50:19 GMT-0700 (PDT)
-[debug] [2018-07-26T16:50:19.538Z] ----------------------------------------------------------------------
+[debug] [2018-07-27T06:32:36.542Z] ----------------------------------------------------------------------
+[debug] [2018-07-27T06:32:36.543Z] Command:       /usr/local/Cellar/node/8.4.0/bin/node /usr/local/bin/firebase serve
+[debug] [2018-07-27T06:32:36.544Z] CLI Version:   4.0.0
+[debug] [2018-07-27T06:32:36.544Z] Platform:      darwin
+[debug] [2018-07-27T06:32:36.544Z] Node Version:  v8.4.0
+[debug] [2018-07-27T06:32:36.544Z] Time:          Thu Jul 26 2018 23:32:36 GMT-0700 (PDT)
+[debug] [2018-07-27T06:32:36.544Z] ----------------------------------------------------------------------
 [debug] 
-[debug] [2018-07-26T16:50:19.550Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
-[debug] [2018-07-26T16:50:19.550Z] > authorizing via signed-in user
-[debug] [2018-07-26T16:50:19.552Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
-[debug] [2018-07-26T16:50:19.552Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
- { refresh_token: '1/FLeXp-PRllHvuvcocb5elTF5byPm6Vy-M9a3uop-uPI',
+[debug] [2018-07-27T06:32:36.555Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2018-07-27T06:32:36.555Z] > authorizing via signed-in user
+[debug] [2018-07-27T06:32:36.557Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2018-07-27T06:32:36.557Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ { refresh_token: '1/_yFDAXgxZMCgFydF2cyWXuy3tuTrHI5jzdDeuhs7WI59E2hvZRFTPqoWmwrMom8X',
   client_id: '563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com',
   client_secret: 'j9iVZfS8kkCEFUPaAeJV0sAi',
   grant_type: 'refresh_token',
   scope: 'email https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloudplatformprojects.readonly https://www.googleapis.com/auth/firebase openid' } 
- Thu Jul 26 2018 09:50:19 GMT-0700 (PDT)
-[debug] [2018-07-26T16:50:20.635Z] <<< HTTP RESPONSE 200
-[debug] [2018-07-26T16:50:20.649Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/dinner-roulette-473a4  
+ Thu Jul 26 2018 23:32:36 GMT-0700 (PDT)
+[debug] [2018-07-27T06:32:37.514Z] <<< HTTP RESPONSE 200
+[debug] [2018-07-27T06:32:37.532Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/dinner-roulette-473a4  
   
- Thu Jul 26 2018 09:50:20 GMT-0700 (PDT)
-[debug] [2018-07-26T16:50:23.840Z] <<< HTTP RESPONSE 200
-[debug] [2018-07-26T16:50:23.841Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/dinner-roulette-473a4/tokens  
+ Thu Jul 26 2018 23:32:37 GMT-0700 (PDT)
+[debug] [2018-07-27T06:32:38.821Z] <<< HTTP RESPONSE 200
+[debug] [2018-07-27T06:32:38.822Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/dinner-roulette-473a4/tokens  
   
- Thu Jul 26 2018 09:50:23 GMT-0700 (PDT)
-[debug] [2018-07-26T16:50:24.313Z] <<< HTTP RESPONSE 200
-[debug] [2018-07-26T16:50:24.313Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/dinner-roulette-473a4  
+ Thu Jul 26 2018 23:32:38 GMT-0700 (PDT)
+[debug] [2018-07-27T06:32:39.584Z] <<< HTTP RESPONSE 200
+[debug] [2018-07-27T06:32:39.585Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/dinner-roulette-473a4  
   
- Thu Jul 26 2018 09:50:24 GMT-0700 (PDT)
-[debug] [2018-07-26T16:50:24.586Z] <<< HTTP RESPONSE 200
+ Thu Jul 26 2018 23:32:39 GMT-0700 (PDT)
+[debug] [2018-07-27T06:32:40.506Z] <<< HTTP RESPONSE 200
 [info] 
 [info] === Serving from '/Users/merlam/Personal/git/dinner-roulette'...
 [info] 
-[debug] [2018-07-26T16:50:24.589Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/242787463667/clients/_:getWebAppConfig  
+[debug] [2018-07-27T06:32:40.508Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/242787463667/clients/_:getWebAppConfig  
   
- Thu Jul 26 2018 09:50:24 GMT-0700 (PDT)
-[debug] [2018-07-26T16:50:24.955Z] <<< HTTP RESPONSE 200
-[info] i  hosting: Serving hosting files from: ./
-[info] ✔  hosting: Local server: http://localhost:5000
-
-[info] Shutting down...
-[debug] [2018-07-26T22:50:20.399Z] ----------------------------------------------------------------------
-[debug] [2018-07-26T22:50:20.400Z] Command:       /usr/local/Cellar/node/8.4.0/bin/node /usr/local/bin/firebase serve
-[debug] [2018-07-26T22:50:20.401Z] CLI Version:   4.0.0
-[debug] [2018-07-26T22:50:20.401Z] Platform:      darwin
-[debug] [2018-07-26T22:50:20.401Z] Node Version:  v8.4.0
-[debug] [2018-07-26T22:50:20.401Z] Time:          Thu Jul 26 2018 15:50:20 GMT-0700 (PDT)
-[debug] [2018-07-26T22:50:20.401Z] ----------------------------------------------------------------------
-[debug] 
-[debug] [2018-07-26T22:50:20.412Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
-[debug] [2018-07-26T22:50:20.412Z] > authorizing via signed-in user
-[debug] [2018-07-26T22:50:20.414Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
-[debug] [2018-07-26T22:50:20.414Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
- { refresh_token: '1/FLeXp-PRllHvuvcocb5elTF5byPm6Vy-M9a3uop-uPI',
-  client_id: '563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com',
-  client_secret: 'j9iVZfS8kkCEFUPaAeJV0sAi',
-  grant_type: 'refresh_token',
-  scope: 'email https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloudplatformprojects.readonly https://www.googleapis.com/auth/firebase openid' } 
- Thu Jul 26 2018 15:50:20 GMT-0700 (PDT)
-[debug] [2018-07-26T22:53:08.487Z] ----------------------------------------------------------------------
-[debug] [2018-07-26T22:53:08.489Z] Command:       /usr/local/Cellar/node/8.4.0/bin/node /usr/local/bin/firebase serve
-[debug] [2018-07-26T22:53:08.490Z] CLI Version:   4.0.0
-[debug] [2018-07-26T22:53:08.490Z] Platform:      darwin
-[debug] [2018-07-26T22:53:08.490Z] Node Version:  v8.4.0
-[debug] [2018-07-26T22:53:08.490Z] Time:          Thu Jul 26 2018 15:53:08 GMT-0700 (PDT)
-[debug] [2018-07-26T22:53:08.490Z] ----------------------------------------------------------------------
-[debug] 
-[debug] [2018-07-26T22:53:08.502Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
-[debug] [2018-07-26T22:53:08.503Z] > authorizing via signed-in user
-[debug] [2018-07-26T22:53:08.504Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
-[debug] [2018-07-26T22:53:08.504Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
- { refresh_token: '1/FLeXp-PRllHvuvcocb5elTF5byPm6Vy-M9a3uop-uPI',
-  client_id: '563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com',
-  client_secret: 'j9iVZfS8kkCEFUPaAeJV0sAi',
-  grant_type: 'refresh_token',
-  scope: 'email https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloudplatformprojects.readonly https://www.googleapis.com/auth/firebase openid' } 
- Thu Jul 26 2018 15:53:08 GMT-0700 (PDT)
-[debug] [2018-07-26T22:53:09.518Z] <<< HTTP RESPONSE 200
-[debug] [2018-07-26T22:53:09.542Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/dinner-roulette-473a4  
-  
- Thu Jul 26 2018 15:53:09 GMT-0700 (PDT)
-[debug] [2018-07-26T22:53:10.891Z] <<< HTTP RESPONSE 200
-[debug] [2018-07-26T22:53:10.892Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/dinner-roulette-473a4/tokens  
-  
- Thu Jul 26 2018 15:53:10 GMT-0700 (PDT)
-[debug] [2018-07-26T22:53:12.582Z] <<< HTTP RESPONSE 200
-[debug] [2018-07-26T22:53:12.583Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/dinner-roulette-473a4  
-  
- Thu Jul 26 2018 15:53:12 GMT-0700 (PDT)
-[debug] [2018-07-26T22:53:13.887Z] <<< HTTP RESPONSE 200
-[info] 
-[info] === Serving from '/Users/merlam/Personal/git/dinner-roulette'...
-[info] 
-[debug] [2018-07-26T22:53:13.896Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/242787463667/clients/_:getWebAppConfig  
-  
- Thu Jul 26 2018 15:53:13 GMT-0700 (PDT)
-[debug] [2018-07-26T22:53:15.242Z] <<< HTTP RESPONSE 200
+ Thu Jul 26 2018 23:32:40 GMT-0700 (PDT)
+[debug] [2018-07-27T06:32:41.552Z] <<< HTTP RESPONSE 200
 [info] i  hosting: Serving hosting files from: ./
 [info] ✔  hosting: Local server: http://localhost:5000
 

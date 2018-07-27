@@ -78,7 +78,10 @@
           <i class="material-icons">trending_up</i> My top posts
         </div>
         <div id="menu-parties" class="mdl-layout__tab mdl-button mdl-js-button mdl-js-ripple-effect">
-          <i class="material-icons">parties</i> Parties
+          <i class="material-icons">parties</i> Parties (admin view)
+        </div>
+        <div id="menu-parties-attendee-view" class="mdl-layout__tab mdl-button mdl-js-button mdl-js-ripple-effect">
+          <i class="material-icons">parties</i> Parties (attendee view)
         </div>
         <button class="mdl-button mdl-js-button mdl-button--fab mdl-color--amber-400 mdl-shadow--4dp mdl-js-ripple-effect" id="add">
           <i class="material-icons">mode_edit</i>
@@ -118,6 +121,31 @@
       </div>
     </section>
 
+        <!-- Show the attend party form -->
+    <section class="mdl-grid content" id="attend-party" style="display:none">
+      <div class="mdl-cell mdl-cell--12-col mdl-grid">
+
+          <!-- Card containing the inputs to add a new messages -->
+          <div class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet
+                  mdl-cell--6-col-desktop">
+            <div class="mdl-card__title mdl-color--light-blue-600 mdl-color-text--white">
+              <h2 class="mdl-card__title-text">Attend Party</h2>
+            </div>
+            <div class="mdl-card__supporting-text mdl-color-text--grey-600">
+              <form id="new-party-form" action="#">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                  <input class="mdl-textfield__input" type="text" id="attend-party-bring-item-input">
+                  <label class="mdl-textfield__label" for="new-party-date">What would you like to bring?</label>
+                </div>
+                <button id="attend-party-submit" type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
+                  Submit 
+                </button>
+              </form>
+            </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Show a list of recent posts -->
     <section class="mdl-grid content" id="recent-posts-list" style="display:none">
       <div class="posts-container mdl-cell mdl-cell--12-col mdl-grid">
@@ -136,8 +164,14 @@
       </div>
     </section>
 
-    <!-- Show parties -->
+    <!-- Show parties (admin)-->
     <section class="mdl-grid content" id="parties-list" style="display:none">
+      <div class="posts-container mdl-cell mdl-cell--12-col mdl-grid">
+      </div>
+    </section>
+
+    <!-- Show parties (attendee) -->
+    <section class="mdl-grid content" id="parties-list-attendees" style="display:none">
       <div class="posts-container mdl-cell mdl-cell--12-col mdl-grid">
       </div>
     </section>

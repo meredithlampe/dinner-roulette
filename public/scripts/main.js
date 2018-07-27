@@ -27,6 +27,7 @@ var addPost = document.getElementById('add-post');
 var addButton = document.getElementById('add');
 var attendParty = document.getElementById('attend-party');
 var attendPartySubmit = document.getElementById('attend-party-submit');
+var otherPeopleAreBringingList = document.getElementsByClassName('other-people-are-bringing-list')[0];
 var willBringInput = document.getElementById('attend-party-bring-item-input');
 var recentPostsSection = document.getElementById('recent-posts-list');
 var userPostsSection = document.getElementById('user-posts-list');
@@ -299,6 +300,7 @@ function createPartyElement(partyId, host, date, location, hostPic) {
   // add attendees section
   var attendeesRef = firebase.database().ref('party-attendees/' + partyId);
   attendeesRef.on('child_added', function(data) {
+    console.log(data.val().bringingText);
     addAttendeeElement(postElement, data.key, data.val().attendeeName, data.val().bringingText);
   });
   listeningFirebaseRefs.push(attendeesRef);
@@ -323,10 +325,10 @@ function addAttendeeElement(element, key, attendeeName, bringingText) {
   attendeesContainer.appendChild(attendee);
 
   // show attendee 'what will you bring' text
-  var bringingText = document.createElement('div');
-  bringingText.classList.add('attendee-bringing-text');
-  bringingText.innerText = bringingText;
-  attendeesContainer.appendChild(bringingText);
+  var bringingTextDiv = document.createElement('div');
+  bringingTextDiv.classList.add('attendee-bringing-text');
+  bringingTextDiv.innerText = bringingText;
+  attendeesContainer.appendChild(bringingTextDiv);
 }
 
 function createPartyElementAttendeeView(partyId, host, date, location, hostPic) {
@@ -362,6 +364,14 @@ function createPartyElementAttendeeView(partyId, host, date, location, hostPic) 
 
     attendButton.onclick = function() {
       showSection(attendParty);
+        // add attendees section
+      var attendeesRef = firebase.database().ref('party-attendees/' + partyId);
+      attendeesRef.on('child_added', function(data) {
+        var bringing = document.createElement('li');
+        bringing.innerHTML = data.val().bringingText;
+        otherPeopleAreBringingList.appendChild(bringing);
+      });
+      listeningFirebaseRefs.push(attendeesRef);
       willBringInput.value = '';
       attendPartySubmit.onclick = function() {
         return firebase.database().ref('/users/' + firebase.auth().currentUser.uid).once('value').then(function(snapshot) {
@@ -746,7 +756,6 @@ function showSection(sectionElement, buttonElement) {
 // Bindings on load.
 window.addEventListener('load', function() {
   // Bind Sign in button.
-  debugger;
   signInButton.addEventListener('click', function() {
     var provider = new firebase.auth.GoogleAuthProvider();
     firebase.auth().signInWithPopup(provider);

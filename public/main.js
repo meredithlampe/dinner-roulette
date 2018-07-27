@@ -728,6 +728,7 @@ function showSection(sectionElement, buttonElement) {
   partiesSectionAttendees.style.display = 'none';
   addPost.style.display = 'none';
   attendParty.style.display = 'none';
+  debugger;
 
   recentMenuButton.classList.remove('is-active');
   myPostsMenuButton.classList.remove('is-active');
@@ -745,8 +746,8 @@ function showSection(sectionElement, buttonElement) {
 
 // Bindings on load.
 window.addEventListener('load', function() {
-  // Bind Sign in button.
   debugger;
+  // Bind Sign in button.
   signInButton.addEventListener('click', function() {
     var provider = new firebase.auth.GoogleAuthProvider();
     firebase.auth().signInWithPopup(provider);

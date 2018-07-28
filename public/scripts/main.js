@@ -233,6 +233,7 @@ function createPartyElementAttendeeView(partyId, host, date, location, descripti
           while (otherPeopleAreBringingList.firstChild) {
               otherPeopleAreBringingList.removeChild(otherPeopleAreBringingList.firstChild);
           }
+          showSection(partiesSectionAttendees, partiesAttendeeViewMenuButton);
           // [END_EXCLUDE]
         });
         

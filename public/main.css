@@ -125,6 +125,8 @@ h3 {
 .status {
     height: 20px;
     padding: 5px;
+    font-style: italic;
+    color: gray;
 }
 .party-attendees-header {
     padding-bottom: 10px;

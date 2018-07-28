@@ -22,6 +22,7 @@ var dateInput = document.getElementById('new-party-date');
 var locationInput = document.getElementById('new-party-location');
 var descriptionInput = document.getElementById('new-party-description');
 var signInButton = document.getElementById('sign-in-button');
+var signInButtonFacebook = document.getElementById('sign-in-button-facebook');
 var signOutButton = document.getElementById('sign-out-button');
 var splashPage = document.getElementById('page-splash');
 var addPost = document.getElementById('add-post');
@@ -468,6 +469,24 @@ function onAuthStateChanged(user) {
     splashPage.style.display = 'none';
     writeUserData(user.uid, user.displayName, user.email, user.photoURL);
     startDatabaseQueries();
+      
+    // decide whether to show admin tab or not
+    var adminsRef = firebase.database().ref('admins');
+    adminsRef.on('child_added', function(data) {
+      var adminId = data.val();
+      var currentUserId = firebase.auth().currentUser.uid;
+      console.log('checking ' + adminId + " v. " + currentUserId);
+      if (adminId == currentUserId) {
+        partiesMenuButton.onclick = function() {
+          showSection(partiesSection, partiesMenuButton); 
+        };
+        addButton.onclick = function() {
+          showSection(addPost);
+          dateInput.value = '';
+          locationInput.value = '';
+        }; 
+      }
+    });
   } else {
     // Set currentUID to null.
     currentUID = null;
@@ -522,19 +541,6 @@ window.addEventListener('load', function() {
     firebase.auth().signOut();
   });
 
-  // decide whether to show admin tab or not
-  var adminsRef = firebase.database().ref('admins');
-  adminsRef.on('child_added', function(data) {
-    var adminId = data.val();
-    var currentUserId = firebase.auth().currentUser.uid;
-    console.log('checking ' + adminId + " v. " + currentUserId);
-    if (adminId == currentUserId) {
-      partiesMenuButton.onclick = function() {
-      showSection(partiesSection, partiesMenuButton);  
-    }; 
-    }
-  });
-
   // Listen for auth state changes
   firebase.auth().onAuthStateChanged(onAuthStateChanged);
 
@@ -557,11 +563,6 @@ window.addEventListener('load', function() {
 
   partiesAttendeeViewMenuButton.onclick = function() {
     showSection(partiesSectionAttendees, partiesAttendeeViewMenuButton);
-  };
-  addButton.onclick = function() {
-    showSection(addPost);
-    dateInput.value = '';
-    locationInput.value = '';
   };
   partiesAttendeeViewMenuButton.onclick();
 }, false);

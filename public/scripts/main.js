@@ -35,6 +35,7 @@ var partiesSectionAttendees = document.getElementById('parties-list-attendees');
 var partiesMenuButton = document.getElementById('menu-parties');
 var partiesAttendeeViewMenuButton = document.getElementById('menu-parties-attendee-view');
 var listeningFirebaseRefs = [];
+var isAdmin = false;
 
 /**
  * Saves a new post to the Firebase DB.
@@ -328,26 +329,10 @@ function addNewPartyAttendee(partyId, attendeeUid, attendeeName, bringingText) {
     attendeeName: attendeeName,
     bringingText: bringingText,
   });
-}
-
-/**
- * Updates the starred status of the post.
- */
-function updateStarredByCurrentUser(postElement, starred) {
-  if (starred) {
-    postElement.getElementsByClassName('starred')[0].style.display = 'inline-block';
-    postElement.getElementsByClassName('not-starred')[0].style.display = 'none';
-  } else {
-    postElement.getElementsByClassName('starred')[0].style.display = 'none';
-    postElement.getElementsByClassName('not-starred')[0].style.display = 'inline-block';
-  }
-}
-
-/**
- * Updates the number of stars displayed for a post.
- */
-function updateStarCount(postElement, nbStart) {
-  postElement.getElementsByClassName('star-count')[0].innerText = nbStart;
+  //       var updates = {};
+  // var currentUserUid = firebase.auth().currentUser.uid;
+  // updates['/admins/'] = {uid: currentUserUid};
+  // firebase.database().ref().update(updates);
 }
 
 /**
@@ -525,6 +510,7 @@ function showSection(sectionElement, buttonElement) {
 
 // Bindings on load.
 window.addEventListener('load', function() {
+
   // Bind Sign in button.
   signInButton.addEventListener('click', function() {
     var provider = new firebase.auth.GoogleAuthProvider();
@@ -534,6 +520,19 @@ window.addEventListener('load', function() {
   // Bind Sign out button.
   signOutButton.addEventListener('click', function() {
     firebase.auth().signOut();
+  });
+
+  // decide whether to show admin tab or not
+  var adminsRef = firebase.database().ref('admins');
+  adminsRef.on('child_added', function(data) {
+    var adminId = data.val();
+    var currentUserId = firebase.auth().currentUser.uid;
+    console.log('checking ' + adminId + " v. " + currentUserId);
+    if (adminId == currentUserId) {
+      partiesMenuButton.onclick = function() {
+      showSection(partiesSection, partiesMenuButton);  
+    }; 
+    }
   });
 
   // Listen for auth state changes
@@ -555,9 +554,7 @@ window.addEventListener('load', function() {
   };
 
   // Bind menu buttons.
-  partiesMenuButton.onclick = function() {
-    showSection(partiesSection, partiesMenuButton);
-  };
+
   partiesAttendeeViewMenuButton.onclick = function() {
     showSection(partiesSectionAttendees, partiesAttendeeViewMenuButton);
   };

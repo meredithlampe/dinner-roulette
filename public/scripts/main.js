@@ -18,19 +18,25 @@
 
 // Shortcuts to DOM Elements.
 var newPartyForm = document.getElementById('new-party-form');
+var titleInput = document.getElementById('new-party-title');
 var dateInput = document.getElementById('new-party-date');
 var locationInput = document.getElementById('new-party-location');
 var descriptionInput = document.getElementById('new-party-description');
 var signInButton = document.getElementById('sign-in-button');
 var signInButtonFacebook = document.getElementById('sign-in-button-facebook');
 var signOutButton = document.getElementById('sign-out-button');
-var splashPage = document.getElementById('page-splash');
+// var splashPage = document.getElementById('page-splash');
 var addPost = document.getElementById('add-post');
 var addButton = document.getElementById('add');
 var attendParty = document.getElementById('attend-party');
 var attendPartySubmit = document.getElementById('attend-party-submit');
 var otherPeopleAreBringingList = document.getElementsByClassName('other-people-are-bringing-list')[0];
+
+// attend party inputs
 var willBringInput = document.getElementById('attend-party-bring-item-input');
+var nameInput = document.getElementById('attend-party-name-input');
+var emailInput = document.getElementById('attend-party-email-input');
+
 var partiesSection = document.getElementById('parties-list');
 var partiesSectionAttendees = document.getElementById('parties-list-attendees');
 var partiesMenuButton = document.getElementById('menu-parties');
@@ -38,11 +44,15 @@ var partiesAttendeeViewMenuButton = document.getElementById('menu-parties-attend
 var listeningFirebaseRefs = [];
 var isAdmin = false;
 
+// handle admin stuff
+var toggleAdminButton = document.getElementsByClassName('toggle-admin')[0];
+var inAdminMode = false;
+
 /**
  * Saves a new post to the Firebase DB.
  */
 // [START write_fan_out]
-function makeNewDinnerParty(uid, username, picture, date, location, description) {
+function makeNewDinnerParty(uid, username, picture, title, date, location, description) {
 
   // var partyId = generatePartyIdForUserid(uid);
 
@@ -51,6 +61,7 @@ function makeNewDinnerParty(uid, username, picture, date, location, description)
     host: username,
     hostPic: picture,
     uid: uid,
+    title: title, 
     location: location,
     description: description,
     date: date,
@@ -71,8 +82,8 @@ function makeNewDinnerParty(uid, username, picture, date, location, description)
 /**
  * Creates a party element.
  */
-function createPartyElement(partyId, host, date, location, description, hostPic) {
-  var uid = firebase.auth().currentUser.uid;
+function createPartyElement(partyId, host, title, date, location, description, hostPic) {
+  // var uid = firebase.auth().currentUser.uid;
   var postElement = getPartyElement(partyId);
 
   // var addPartyNeedForm = postElement.getElementsByClassName('new-party-need-form')[0];
@@ -85,7 +96,7 @@ function createPartyElement(partyId, host, date, location, description, hostPic)
   if (description) {
     postElement.getElementsByClassName('description')[0].innerText = description;  
   }
-  postElement.getElementsByClassName('mdl-card__title-text')[0].innerText = host + '\'s Party';
+  postElement.getElementsByClassName('mdl-card__title-text')[0].innerText = title;
   // postElement.getElementsByClassName('username')[0].innerText = author || 'Anonymous';
   postElement.getElementsByClassName('avatar')[0].style.backgroundImage = 'url("' +
       (hostPic || './silhouette.jpg') + '")';
@@ -127,8 +138,7 @@ function createPartyElement(partyId, host, date, location, description, hostPic)
   // add attendees section
   var attendeesRef = firebase.database().ref('party-attendees/' + partyId);
   attendeesRef.on('child_added', function(data) {
-    console.log(data.val().bringingText);
-    addAttendeeElement(postElement, data.key, data.val().attendeeName, data.val().bringingText);
+    addAttendeeElement(postElement, data.key, data.val().attendeeName, data.val().attendeeEmail, data.val().bringingText);
   });
   listeningFirebaseRefs.push(attendeesRef);
 
@@ -140,8 +150,7 @@ function createPartyElement(partyId, host, date, location, description, hostPic)
   return postElement;
 }
 
-function addAttendeeElement(element, key, attendeeName, bringingText) {
-
+function addAttendeeElement(element, key, attendeeName, attendeeEmail, bringingText) {
   // get parent container
   var attendeesContainer = element.getElementsByClassName('party-attendees-container')[0];
 
@@ -151,6 +160,12 @@ function addAttendeeElement(element, key, attendeeName, bringingText) {
   attendee.innerText = attendeeName;
   attendeesContainer.appendChild(attendee);
 
+  // show attendee email
+  var emailDiv = document.createElement('div');
+  emailDiv.classList.add('attendee-bringing-text');
+  emailDiv.innerText = attendeeEmail;
+  attendeesContainer.appendChild(emailDiv);
+
   // show attendee 'what will you bring' text
   var bringingTextDiv = document.createElement('div');
   bringingTextDiv.classList.add('attendee-bringing-text');
@@ -158,13 +173,13 @@ function addAttendeeElement(element, key, attendeeName, bringingText) {
   attendeesContainer.appendChild(bringingTextDiv);
 }
 
-function createPartyElementAttendeeView(partyId, host, date, location, description, hostPic) {
+function createPartyElementAttendeeView(partyId, host, title, date, location, description, hostPic) {
   var html =
       '<div class="post post-' + partyId + ' mdl-cell mdl-cell--12-col ' +
                   'mdl-cell--6-col-tablet mdl-cell--4-col-desktop mdl-grid mdl-grid--no-spacing">' +
         '<div class="mdl-card mdl-shadow--2dp">' +
           '<div class="mdl-card__title mdl-color--light-blue-600 mdl-color-text--white">' +
-            '<h4 class="mdl-card__title-text">' + date + '</h4>' +
+            '<h4 class="mdl-card__title-text">' + title + '</h4>' +
           '</div>' +
           // '<div class="header">' +
           //   '<div>' +
@@ -173,6 +188,7 @@ function createPartyElementAttendeeView(partyId, host, date, location, descripti
           // '</div>' +
           '<div class="party-content-container">' +
             // '<div class="party-content-item date"></div>' +
+            '<div class="party-content-item date"></div>' + 
             '<div class="party-content-item location"></div>' + 
             '<div class="description"></div>' + 
             '<div class="filler"></div>' +
@@ -193,19 +209,19 @@ function createPartyElementAttendeeView(partyId, host, date, location, descripti
 
     var status = partyElement.getElementsByClassName('status')[0];
     // add attendee status
-    var attendeesRef = firebase.database().ref('party-attendees/' + partyId);
-    attendeesRef.on('child_added', function(data) {
-      if (data.val().attendeeUid === firebase.auth().currentUser.uid) {
-        status.innerHTML = 'You\'re attending this party';
-      }
-    });
-    attendeesRef.on('child_changed', function(data) {
+    // var attendeesRef = firebase.database().ref('party-attendees/' + partyId);
+    // attendeesRef.on('child_added', function(data) {
+    //   if (data.val().attendeeUid === firebase.auth().currentUser.uid) {
+    //     status.innerHTML = 'You\'re attending this party';
+    //   }
+    // });
+    // attendeesRef.on('child_changed', function(data) {
       
-    });
-    attendeesRef.on('child_removed', function(data) {
+    // });
+    // attendeesRef.on('child_removed', function(data) {
       
-    });
-    listeningFirebaseRefs.push(attendeesRef);
+    // });
+    // listeningFirebaseRefs.push(attendeesRef);
 
     var attendButton = partyElement.getElementsByClassName("attend-party-button")[0];
     attendButton.onclick = function() {
@@ -224,23 +240,25 @@ function createPartyElementAttendeeView(partyId, host, date, location, descripti
       listeningFirebaseRefs.push(attendeesRef);
       willBringInput.value = '';
       attendPartySubmit.onclick = function() {
-        return firebase.database().ref('/users/' + firebase.auth().currentUser.uid).once('value').then(function(snapshot) {
-          var username = (snapshot.val() && snapshot.val().username) || 'Anonymous';
+        // return firebase.database().ref('/users/' + firebase.auth().currentUser.uid).once('value').then(function(snapshot) {
+          // var username = (snapshot.val() && snapshot.val().username) || 'Anonymous';
           // [START_EXCLUDE]
           var willBring = willBringInput.value;
+
+          addNewPartyAttendee(partyId, null, emailInput.value, nameInput.value, willBring);
           willBringInput.value = '';
-          addNewPartyAttendee(partyId, firebase.auth().currentUser.uid, username, willBring);
+          nameInput.value = '';
+          emailInput.value = '';  
 
           // hide list of things people are bringing to this party
           while (otherPeopleAreBringingList.firstChild) {
               otherPeopleAreBringingList.removeChild(otherPeopleAreBringingList.firstChild);
           }
           showSection(partiesSectionAttendees, partiesAttendeeViewMenuButton);
+        }
           // [END_EXCLUDE]
-        });
-        
+        // });
       }
-    };
 
     // if (componentHandler) {
     //   componentHandler.upgradeElements(partyElement.getElementsByClassName('mdl-textfield')[0]);
@@ -249,6 +267,7 @@ function createPartyElementAttendeeView(partyId, host, date, location, descripti
   // Set values.
   // partyElement.getElementsByClassName('date')[0].innerText = date;
   partyElement.getElementsByClassName('location')[0].innerText = location;
+  partyElement.getElementsByClassName('date')[0].innerText = date;
 
   if (description) {
     partyElement.getElementsByClassName('description')[0].innerText = description;  
@@ -323,10 +342,11 @@ function createNewPartyNeed(partyId, needText) {
   });
 }
 
-function addNewPartyAttendee(partyId, attendeeUid, attendeeName, bringingText) {
+function addNewPartyAttendee(partyId, attendeeUid, attendeeEmail, attendeeName, bringingText) {
   firebase.database().ref().child('party-attendees/' + partyId).push({
     partyId: partyId,
     attendeeUid: attendeeUid,
+    attendeeEmail: attendeeEmail,
     attendeeName: attendeeName,
     bringingText: bringingText,
   });
@@ -362,9 +382,6 @@ function deleteComment(postElement, id) {
  * Starts listening for new posts and populates posts lists.
  */
 function startDatabaseQueries() {
-  // [START my_top_posts_query]
-  var myUserId = firebase.auth().currentUser.uid;
-  // [END my_top_posts_query]
   var partiesRef = firebase.database().ref('events');
   var partiesAttendeesRef = firebase.database().ref('events');
 
@@ -373,7 +390,7 @@ function startDatabaseQueries() {
       var host = data.val().host || 'Anonymous';
       var containerElement = sectionElement.getElementsByClassName('posts-container')[0];
       containerElement.insertBefore(
-        createPartyElement(data.key, data.val().host, data.val().date, data.val().location, data.val().description, data.val().hostPic),
+        createPartyElement(data.key, data.val().host, data.val().title, data.val().date, data.val().location, data.val().description, data.val().hostPic),
         containerElement.firstChild);
     });
     ref.on('child_changed', function(data) {
@@ -395,7 +412,7 @@ function startDatabaseQueries() {
       var host = data.val().host || 'Anonymous';
       var containerElement = sectionElement.getElementsByClassName('posts-container')[0];
       containerElement.insertBefore(
-        createPartyElementAttendeeView(data.key, data.val().host, data.val().date, data.val().location, data.val().description, data.val().hostPic),
+        createPartyElementAttendeeView(data.key, data.val().host, data.val().title, data.val().date, data.val().location, data.val().description, data.val().hostPic),
         containerElement.firstChild);
     });
     // ref.on('child_changed', function(data) {
@@ -469,7 +486,7 @@ function onAuthStateChanged(user) {
     splashPage.style.display = 'none';
     writeUserData(user.uid, user.displayName, user.email, user.photoURL);
     startDatabaseQueries();
-      
+
     // decide whether to show admin tab or not
     var adminsRef = firebase.database().ref('admins');
     adminsRef.on('child_added', function(data) {
@@ -484,6 +501,7 @@ function onAuthStateChanged(user) {
           showSection(addPost);
           dateInput.value = '';
           locationInput.value = '';
+          titleInput.value = '';
         }; 
       }
     });
@@ -491,17 +509,17 @@ function onAuthStateChanged(user) {
     // Set currentUID to null.
     currentUID = null;
     // Display the splash page where you can sign-in.
-    splashPage.style.display = '';
+    // splashPage.style.display = '';
   }
 }
 
-function newDinnerPartyWithCurrentUserAsHost(date, location, description) {
+function newDinnerPartyWithCurrentUserAsHost(title, date, location, description) {
   var userId = firebase.auth().currentUser.uid;
   return firebase.database().ref('/users/' + userId).once('value').then(function(snapshot) {
     var username = (snapshot.val() && snapshot.val().username) || 'Anonymous';
     // [START_EXCLUDE]
     return makeNewDinnerParty(firebase.auth().currentUser.uid, username,
-      firebase.auth().currentUser.photoURL,
+      firebase.auth().currentUser.photoURL, title,
       date, location, description);
     // [END_EXCLUDE]
   });
@@ -531,27 +549,44 @@ function showSection(sectionElement, buttonElement) {
 window.addEventListener('load', function() {
 
   // Bind Sign in button.
-  signInButton.addEventListener('click', function() {
-    var provider = new firebase.auth.GoogleAuthProvider();
-    firebase.auth().signInWithPopup(provider);
-  });
+  // signInButton.addEventListener('click', function() {
+  //   // var provider = new firebase.auth.GoogleAuthProvider();
+  //   // firebase.auth().signInWithPopup(provider);
 
-  // Bind Sign out button.
-  signOutButton.addEventListener('click', function() {
-    firebase.auth().signOut();
-  });
+  //   // Using a redirect.
+  //   firebase.auth().getRedirectResult().then(function(result) {
+  //     if (result.credential) {
+  //       // This gives you a Google Access Token.
+  //       var token = result.credential.accessToken;
+  //     }
+  //     var user = result.user;
+  //   });
+
+  //   // Start a sign in process for an unauthenticated user.
+  //   var provider = new firebase.auth.GoogleAuthProvider();
+  //   provider.addScope('profile');
+  //   provider.addScope('email');
+  //   firebase.auth().signInWithRedirect(provider);
+  // });
+
+  // // Bind Sign out button.
+  // signOutButton.addEventListener('click', function() {
+  //   firebase.auth().signOut();
+  // });
 
   // Listen for auth state changes
-  firebase.auth().onAuthStateChanged(onAuthStateChanged);
+  // firebase.auth().onAuthStateChanged(onAuthStateChanged);
 
   // Saves message on form submit.
   newPartyForm.onsubmit = function(e) {
     e.preventDefault();
+    var title = titleInput.value;
     var date = dateInput.value;
     var location = locationInput.value;
     var description = descriptionInput.value;
     if (date && location) {
-      newDinnerPartyWithCurrentUserAsHost(date, location, description);
+      newDinnerPartyWithCurrentUserAsHost(title, date, location, description);
+      titleInput.value = '';
       dateInput.value = '';
       locationInput.value = '';
       descriptionInput.value = '';
@@ -559,7 +594,18 @@ window.addEventListener('load', function() {
     }
   };
 
+  startDatabaseQueries();
+
   // Bind menu buttons.
+  toggleAdminButton.onclick = function() {
+    if (isAdmin) {
+      showSection(partiesSectionAttendees);
+      isAdmin = false;
+    } else {
+      showSection(partiesSection);
+      isAdmin = true;
+    }
+  }
 
   partiesAttendeeViewMenuButton.onclick = function() {
     showSection(partiesSectionAttendees, partiesAttendeeViewMenuButton);

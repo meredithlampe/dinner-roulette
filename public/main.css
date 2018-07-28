@@ -134,6 +134,9 @@ h3 {
 .filler {
     flex-grow: 1;
 }
+.nav-bar {
+    display: none;
+}
 #sign-in-button {
     margin-left: 10px;
     color: inherit;

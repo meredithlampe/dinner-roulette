@@ -50,29 +50,29 @@
 
 
   <!-- Splash screen -->
-  <section id="page-splash">
+<!--   <section id="page-splash">
     <h3 class="logo">Blind 8</h3>
     <div>
       <button id="sign-in-button" class="mdl-button--raised mdl-button mdl-js-button mdl-js-ripple-effect"><i class="material-icons">account_circle</i> Sign in with Google</button>
     </div>
-  </section>
+  </section> -->
 
   <!-- Header section containing logo and menu -->
   <header class="header mdl-layout__header mdl-color-text--white mdl-color--light-blue-700">
 
     <div class="mdl-layout__header-row titlebar">
-      <h3 class="logo">Blind 8</h3>
-      <button id="sign-out-button" class="mdl-button--raised mdl-button mdl-js-button mdl-js-ripple-effect"><i class="material-icons">account_circle</i> Sign out</button>
+      <h3 class="logo toggle-admin">Blind 8</h3>
+<!--       <button id="sign-out-button" class="mdl-button--raised mdl-button mdl-js-button mdl-js-ripple-effect"><i class="material-icons">account_circle</i> Sign out</button> -->
     </div>
 
     <!-- Navigation Bar -->
-    <div class="tab mdl-layout__header-row mdl-color--light-blue-600">
+    <div class="nav-bar tab mdl-layout__header-row mdl-color--light-blue-600">
       <div class="mdl-tab">
+        <div id="menu-parties-attendee-view" class="mdl-layout__tab mdl-button mdl-js-button mdl-js-ripple-effect">
+          <i class="material-icons">parties</i> Parties
+        </div>
         <div id="menu-parties" class="mdl-layout__tab mdl-button mdl-js-button mdl-js-ripple-effect">
           <i class="material-icons">parties</i> Parties (admin view)
-        </div>
-        <div id="menu-parties-attendee-view" class="mdl-layout__tab mdl-button mdl-js-button mdl-js-ripple-effect">
-          <i class="material-icons">parties</i> Parties (attendee view)
         </div>
         <button class="mdl-button mdl-js-button mdl-button--fab mdl-color--amber-400 mdl-shadow--4dp mdl-js-ripple-effect" id="add">
           <i class="material-icons">mode_edit</i>
@@ -95,6 +95,10 @@
             </div>
             <div class="mdl-card__supporting-text mdl-color-text--grey-600">
               <form id="new-party-form" action="#">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                  <input class="mdl-textfield__input" type="text" id="new-party-title">
+                  <label class="mdl-textfield__label" for="new-party-title"><strong>Title</strong>, e.g. Pasadena Sunday Night</label>
+                </div>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                   <input class="mdl-textfield__input" type="text" id="new-party-date">
                   <label class="mdl-textfield__label" for="new-party-date"><strong>Date/Time</strong>, e.g. Tuesday, January 12th at 7:00</label>
@@ -127,13 +131,21 @@
               <h2 class="mdl-card__title-text">Attend Party</h2>
             </div>
             <div class="mdl-card__supporting-text mdl-color-text--grey-600">
-              <h4 class="mdl-card__title-text">Other people are bringing:</h4>
-              <ul class="other-people-are-bringing-list"></ul>
               <form id="new-party-form" action="#">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                  <input class="mdl-textfield__input" type="text" id="attend-party-name-input">
+                  <label class="mdl-textfield__label" for="new-party-name">Name</label>
+                </div>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                  <input class="mdl-textfield__input" type="text" id="attend-party-email-input">
+                  <label class="mdl-textfield__label" for="new-party-email">Email</label>
+                </div>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                   <input class="mdl-textfield__input" type="text" id="attend-party-bring-item-input">
                   <label class="mdl-textfield__label" for="new-party-date">What would you like to bring?</label>
                 </div>
+                <h4 class="mdl-card__title-text">Other people are bringing:</h4>
+                <ul class="other-people-are-bringing-list"></ul>
                 <button id="attend-party-submit" type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
                   Submit 
                 </button>

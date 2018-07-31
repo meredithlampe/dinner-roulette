@@ -15,7 +15,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="description" content="Demonstrates the use of Google Cloud Database with a Firebase DB">
+  <meta name="description" content="Eat with strangers!">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Blind 8</title>
 
@@ -66,12 +66,12 @@
     </div>
 
     <!-- Navigation Bar -->
-    <div class="nav-bar tab mdl-layout__header-row mdl-color--light-blue-600">
+    <div class="nav-bar hidden tab mdl-layout__header-row mdl-color--light-blue-600">
       <div class="mdl-tab">
-        <div id="menu-parties-attendee-view" class="mdl-layout__tab mdl-button mdl-js-button mdl-js-ripple-effect">
+        <div id="menu-parties-attendee-view" class="hidden mdl-layout__tab mdl-button mdl-js-button mdl-js-ripple-effect">
           <i class="material-icons">parties</i> Parties
         </div>
-        <div id="menu-parties" class="mdl-layout__tab mdl-button mdl-js-button mdl-js-ripple-effect">
+        <div id="menu-parties" class="hidden mdl-layout__tab mdl-button mdl-js-button mdl-js-ripple-effect">
           <i class="material-icons">parties</i> Parties (admin view)
         </div>
         <button class="mdl-button mdl-js-button mdl-button--fab mdl-color--amber-400 mdl-shadow--4dp mdl-js-ripple-effect" id="add">
@@ -163,7 +163,36 @@
 
     <!-- Show parties (attendee) -->
     <section class="mdl-grid content" id="parties-list-attendees" style="display:none">
+        <div class="parties-subtitle">Welcome to Blind 8! Click 'Attend Party' on any event below, 
+        then give us your name and email to sign up.</div>
       <div class="posts-container mdl-cell mdl-cell--12-col mdl-grid">
+      </div>
+    </section>
+
+    <!-- Show gatekeeper to admin page -->
+    <section class="mdl-grid content" id="admin-gatekeeper" style="display:none">
+      <div class="posts-container mdl-cell mdl-cell--12-col mdl-grid">
+      <form id="new-party-form" action="#">
+          <div>You've found the admin page. Please answer this question correctly to proceed.</div>
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input class="mdl-textfield__input" type="text" id="admin-gatekeeper-text-input">
+            <label class="mdl-textfield__label" for="new-party-name">What is your favorite color?</label>
+          </div>
+          <button id="admin-gatekeeper-submit" type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
+            Submit
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Show confirmation page -->
+    <section class="mdl-grid content" id="attend-confirmation" style="display:none">
+      <div class="confirmation-container mdl-cell mdl-cell--6-col mdl-grid">
+        <h3>Confirmed!</h3>
+        <div id='attend-confirmation-details'></div>
+      <button id="attend-confirmation-done" type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
+        Done
+      </button>
       </div>
     </section>
   </main>

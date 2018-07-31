@@ -29,16 +29,29 @@ var signOutButton = document.getElementById('sign-out-button');
 var addPost = document.getElementById('add-post');
 var addButton = document.getElementById('add');
 var attendParty = document.getElementById('attend-party');
-var attendPartySubmit = document.getElementById('attend-party-submit');
 var otherPeopleAreBringingList = document.getElementsByClassName('other-people-are-bringing-list')[0];
 
 // attend party inputs
 var willBringInput = document.getElementById('attend-party-bring-item-input');
 var nameInput = document.getElementById('attend-party-name-input');
 var emailInput = document.getElementById('attend-party-email-input');
+var attendPartySubmit = document.getElementById('attend-party-submit');
 
+// admin gatekeeper input
+var adminInput = document.getElementById('admin-gatekeeper-text-input');
+var adminGatekeeperSubmit = document.getElementById('admin-gatekeeper-submit');
+
+// attend confirmation page
+var attendConfirmationDetails = document.getElementById('attend-confirmation-details');
+var attendConfirmationDoneButton = document.getElementById('attend-confirmation-done');
+
+// sections
+var attendConfirmationSection = document.getElementById('attend-confirmation');
+var shownSection = 'PARTIES'; // || ADMIN || ADMIN-GATEKEEPER
 var partiesSection = document.getElementById('parties-list');
 var partiesSectionAttendees = document.getElementById('parties-list-attendees');
+var adminGatekeeperSection = document.getElementById('admin-gatekeeper');
+
 var partiesMenuButton = document.getElementById('menu-parties');
 var partiesAttendeeViewMenuButton = document.getElementById('menu-parties-attendee-view');
 var listeningFirebaseRefs = [];
@@ -47,6 +60,7 @@ var isAdmin = false;
 // handle admin stuff
 var toggleAdminButton = document.getElementsByClassName('toggle-admin')[0];
 var inAdminMode = false;
+var navBar = document.getElementsByClassName('nav-bar')[0];
 
 /**
  * Saves a new post to the Firebase DB.
@@ -246,15 +260,19 @@ function createPartyElementAttendeeView(partyId, host, title, date, location, de
           var willBring = willBringInput.value;
 
           addNewPartyAttendee(partyId, null, emailInput.value, nameInput.value, willBring);
-          willBringInput.value = '';
-          nameInput.value = '';
-          emailInput.value = '';  
 
           // hide list of things people are bringing to this party
           while (otherPeopleAreBringingList.firstChild) {
               otherPeopleAreBringingList.removeChild(otherPeopleAreBringingList.firstChild);
           }
-          showSection(partiesSectionAttendees, partiesAttendeeViewMenuButton);
+
+          // show confirmation page
+          attendConfirmationDetails.innerHTML = 
+            'We\'ll send and email to <strong>' + emailInput.value + '</strong> with more details soon.';
+          willBringInput.value = '';
+          nameInput.value = '';
+          emailInput.value = '';  
+          showSection(attendConfirmationSection);
         }
           // [END_EXCLUDE]
         // });
@@ -471,58 +489,10 @@ function cleanupUi() {
  */
 var currentUID;
 
-/**
- * Triggers every time there is a change in the Firebase auth state (i.e. user signed-in or user signed out).
- */
-function onAuthStateChanged(user) {
-  // We ignore token refresh events.
-  if (user && currentUID === user.uid) {
-    return;
-  }
-
-  cleanupUi();
-  if (user) {
-    currentUID = user.uid;
-    splashPage.style.display = 'none';
-    writeUserData(user.uid, user.displayName, user.email, user.photoURL);
-    startDatabaseQueries();
-
-    // decide whether to show admin tab or not
-    var adminsRef = firebase.database().ref('admins');
-    adminsRef.on('child_added', function(data) {
-      var adminId = data.val();
-      var currentUserId = firebase.auth().currentUser.uid;
-      console.log('checking ' + adminId + " v. " + currentUserId);
-      if (adminId == currentUserId) {
-        partiesMenuButton.onclick = function() {
-          showSection(partiesSection, partiesMenuButton); 
-        };
-        addButton.onclick = function() {
-          showSection(addPost);
-          dateInput.value = '';
-          locationInput.value = '';
-          titleInput.value = '';
-        }; 
-      }
-    });
-  } else {
-    // Set currentUID to null.
-    currentUID = null;
-    // Display the splash page where you can sign-in.
-    // splashPage.style.display = '';
-  }
-}
-
 function newDinnerPartyWithCurrentUserAsHost(title, date, location, description) {
-  var userId = firebase.auth().currentUser.uid;
-  return firebase.database().ref('/users/' + userId).once('value').then(function(snapshot) {
-    var username = (snapshot.val() && snapshot.val().username) || 'Anonymous';
-    // [START_EXCLUDE]
-    return makeNewDinnerParty(firebase.auth().currentUser.uid, username,
-      firebase.auth().currentUser.photoURL, title,
+    return makeNewDinnerParty(null, null,
+      null, title,
       date, location, description);
-    // [END_EXCLUDE]
-  });
 }
 
 /**
@@ -533,6 +503,8 @@ function showSection(sectionElement, buttonElement) {
   partiesSectionAttendees.style.display = 'none';
   addPost.style.display = 'none';
   attendParty.style.display = 'none';
+  attendConfirmationSection.style.display = 'none';
+  adminGatekeeperSection.style.display = 'none';
 
   partiesMenuButton.classList.remove('is-active');
   partiesAttendeeViewMenuButton.classList.remove('is-active');
@@ -547,35 +519,21 @@ function showSection(sectionElement, buttonElement) {
 
 // Bindings on load.
 window.addEventListener('load', function() {
+  addButton.onclick = function() {
+    showSection(addPost);
+    willBringInput.value = '';
+    nameInput.value = '';
+    emailInput.value = '';  
+  };
+  addButton.style.display='none'; // hide by default
 
-  // Bind Sign in button.
-  // signInButton.addEventListener('click', function() {
-  //   // var provider = new firebase.auth.GoogleAuthProvider();
-  //   // firebase.auth().signInWithPopup(provider);
-
-  //   // Using a redirect.
-  //   firebase.auth().getRedirectResult().then(function(result) {
-  //     if (result.credential) {
-  //       // This gives you a Google Access Token.
-  //       var token = result.credential.accessToken;
-  //     }
-  //     var user = result.user;
-  //   });
-
-  //   // Start a sign in process for an unauthenticated user.
-  //   var provider = new firebase.auth.GoogleAuthProvider();
-  //   provider.addScope('profile');
-  //   provider.addScope('email');
-  //   firebase.auth().signInWithRedirect(provider);
-  // });
-
-  // // Bind Sign out button.
-  // signOutButton.addEventListener('click', function() {
-  //   firebase.auth().signOut();
-  // });
-
-  // Listen for auth state changes
-  // firebase.auth().onAuthStateChanged(onAuthStateChanged);
+  adminGatekeeperSubmit.onclick = function() {
+    var answer = adminInput.value;
+    if (answer === 'blue, no, green') {
+        addButton.style.display='';
+      showSection(partiesSection);
+    }
+  }
 
   // Saves message on form submit.
   newPartyForm.onsubmit = function(e) {
@@ -598,13 +556,23 @@ window.addEventListener('load', function() {
 
   // Bind menu buttons.
   toggleAdminButton.onclick = function() {
-    if (isAdmin) {
+    if (shownSection === 'ADMIN') {
+      shownSection = 'PARTIES';
       showSection(partiesSectionAttendees);
+      addButton.style.display='none';
       isAdmin = false;
-    } else {
-      showSection(partiesSection);
-      isAdmin = true;
+    } else {//if (shownSection === 'PARTIES') {
+      shownSection = 'ADMIN';
+      showSection(adminGatekeeperSection);
+      navBar.classList.remove('hidden');
+      isAdmin = false;
     }
+  }
+
+  attendConfirmationDoneButton.onclick = function () {
+     // cleanup confirmation page
+    attendConfirmationDetails.innerHTML = '';
+    showSection(partiesSectionAttendees);
   }
 
   partiesAttendeeViewMenuButton.onclick = function() {

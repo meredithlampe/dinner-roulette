@@ -128,13 +128,26 @@ h3 {
     font-style: italic;
     color: gray;
 }
+.parties-subtitle {
+        margin-top: 10px;
+    margin-left: 30px;
+}
 .party-attendees-header {
+    padding-bottom: 10px;
+}
+.confirmation-container {
+    display: flex;
+    flex-direction: column;
+}
+#attend-confirmation-details {
     padding-bottom: 10px;
 }
 .filler {
     flex-grow: 1;
 }
 .nav-bar {
+}
+.hidden {
     display: none;
 }
 #sign-in-button {

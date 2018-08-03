@@ -207,9 +207,12 @@ function createPartyElementAttendeeView(partyId, host, title, date, location, de
               '<div class="num-attending">0</div><div>/8</div>' + 
             '</div>' + 
             '<form id="new-attendee-form" action="#">' + 
-              '<button type="submit" class="attend-party-button party-content-item mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">' + 
-                'Attend Party' + 
-              '</button>' + 
+              '<div class="attend-button-container">' +
+                '<button type="submit" class="attend-party-button party-content-item mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">' + 
+                  'Attend Party' + 
+                '</button>' + 
+                '<div class="attend-button-full"></div>'
+              '</div>'
             '</form>' +
           '</div>' +
         '</div>' +
@@ -221,11 +224,16 @@ function createPartyElementAttendeeView(partyId, host, title, date, location, de
     var partyElement = div.firstChild;
 
     peopleComingRef.on('child_added', function(data) {
-      console.log(data.val().partyId);
       var element = document.getElementsByClassName('post-' + data.val().partyId + '-attendee')[0];
       var numAttending = element.getElementsByClassName('num-attending')[0];
       var num = parseInt(numAttending.innerHTML);
-      numAttending.innerHTML = num + 1;
+      var newNumAttending = num + 1;
+      numAttending.innerHTML = newNumAttending;
+      if (newNumAttending >= 8) {
+        var attendPartyButton = element.getElementsByClassName('attend-party-button')[0];
+        attendPartyButton.disabled = true;
+        element.getElementsByClassName('attend-button-full')[0].innerHTML = 'FULL';
+      }
     });
     // add attendee status
     // var attendeesRef = firebase.database().ref('party-attendees/' + partyId);

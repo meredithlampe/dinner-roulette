@@ -132,6 +132,16 @@ h3 {
         margin-top: 10px;
     margin-left: 30px;
 }
+.num-attending-container {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: row;
+    color: grey;
+}
+.num-attending-label {
+    padding-right: 3px;
+}
 .party-attendees-header {
     padding-bottom: 10px;
 }

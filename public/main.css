@@ -139,10 +139,47 @@ h3 {
     flex-direction: row;
     color: grey;
 }
+.attending-elements {
+    display: flex;
+    flex-direction: row;
+}
+.right-attending {
+    flex-grow: 1;
+    display: flex;
+}
 .attend-button-container {
     display: flex; 
     align-items: baseline;
 }
+.fun-image  {
+    flex-grow: 1;
+    background-repeat: no-repeat;
+    background-position: right bottom;
+}
+
+.watermelon .fun-image {
+    background-image: url("watermelon-dance.gif");
+    background-size: 100px;
+}
+.pink-background {
+    background-color: #ff6658;
+}
+
+.shark  .fun-image {
+     background-image: url("dancing-shark.gif");
+    background-size: 140px; 
+}
+
+.avocado .fun-image {
+    background-image: url("avocado-dance.gif");
+    background-size: 180px;
+    margin-bottom: -20px;
+    margin-right: -40px;
+}
+.green-background {
+    background-color: green;
+}
+
 .attend-button-full {
     padding-left: 5px;
     color: grey;

@@ -202,18 +202,25 @@ function createPartyElementAttendeeView(partyId, host, title, date, location, de
             '<div class="party-content-item location"></div>' + 
             '<div class="description"></div>' + 
             '<div class="filler"></div>' +
-            '<div class="num-attending-container">' +
-              '<div class="num-attending-label">Number attending: </div>' + 
-              '<div class="num-attending">0</div><div>/8</div>' + 
-            '</div>' + 
-            '<form id="new-attendee-form" action="#">' + 
-              '<div class="attend-button-container">' +
-                '<button type="submit" class="attend-party-button party-content-item mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">' + 
-                  'Attend Party' + 
-                '</button>' + 
-                '<div class="attend-button-full"></div>'
-              '</div>'
-            '</form>' +
+            '<div class="attending-elements">' +
+              '<div class="left-attending">' +
+                '<div class="num-attending-container">' +
+                  '<div class="num-attending-label">Number attending: </div>' + 
+                  '<div class="num-attending">0</div><div>/8</div>' + 
+                '</div>' + 
+                '<form id="new-attendee-form" action="#">' + 
+                  '<div class="attend-button-container">' +
+                    '<button type="submit" class="attend-party-button party-content-item mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">' + 
+                      'Attend Party' + 
+                    '</button>' + 
+                    '<div class="attend-button-full"></div>' + 
+                  '</div>' + 
+                '</form>' +
+              '</div>' +
+              '<div class="right-attending">' +
+                '<div class="fun-image"/>' +
+              '</div>' +
+            '</div>' +
           '</div>' +
         '</div>' +
       '</div>';
@@ -235,6 +242,8 @@ function createPartyElementAttendeeView(partyId, host, title, date, location, de
         element.getElementsByClassName('attend-button-full')[0].innerHTML = 'FULL';
       }
     });
+
+
     // add attendee status
     // var attendeesRef = firebase.database().ref('party-attendees/' + partyId);
     // attendeesRef.on('child_added', function(data) {
@@ -443,9 +452,26 @@ function startDatabaseQueries() {
       var host = data.val().host || 'Anonymous';
       var containerElement = sectionElement.getElementsByClassName('posts-container')[0];
       var partiesPeopleComingRef = firebase.database().ref('party-attendees/' + data.key); 
+      var partyElement = createPartyElementAttendeeView(data.key, data.val().host, data.val().title, data.val().date, data.val().location, data.val().description, data.val().hostPic, partiesPeopleComingRef);
       containerElement.insertBefore(
-        createPartyElementAttendeeView(data.key, data.val().host, data.val().title, data.val().date, data.val().location, data.val().description, data.val().hostPic, partiesPeopleComingRef),
+        partyElement,
         containerElement.firstChild);
+      if (containerElement.children.length === 1) {
+        // add watermelon gif
+        partyElement.getElementsByClassName('mdl-card')[0].classList.add('watermelon');
+        partyElement.getElementsByClassName('mdl-card__title')[0].classList
+          .remove('mdl-color--light-blue-600');
+        partyElement.getElementsByClassName('mdl-card__title')[0].classList 
+          .add('pink-background'); 
+      } else if (containerElement.children.length === 2) {
+        partyElement.getElementsByClassName('mdl-card')[0].classList.add('shark');
+      } else {
+        partyElement.getElementsByClassName('mdl-card')[0].classList.add('avocado');
+        partyElement.getElementsByClassName('mdl-card__title')[0].classList
+          .remove('mdl-color--light-blue-600');
+        partyElement.getElementsByClassName('mdl-card__title')[0].classList 
+          .add('green-background'); 
+      }
     });
     // ref.on('child_changed', function(data) {
     //   var containerElement = sectionElement.getElementsByClassName('posts-container')[0];
